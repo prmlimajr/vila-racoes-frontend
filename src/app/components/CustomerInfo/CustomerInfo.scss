@@ -1,0 +1,14 @@
+.customerCard {
+  background-color: var(--gray);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+
+  .row-info {
+    display: flex;
+    font-size: 14px;
+    p {
+      margin-left: 10px;
+    }
+  }
+}

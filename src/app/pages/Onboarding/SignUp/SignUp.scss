@@ -1,0 +1,36 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .signupColumn {
+    min-width: 48%;
+  }
+}
+
+.row-align-right {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+#firstName,
+#lastName,
+#confirmPassword,
+#passwordReminder {
+  margin-bottom: 20px;
+}
+
+.signinForm {
+  label {
+    margin-top: 10px;
+  }
+
+  button {
+    margin-top: 20px;
+  }
+
+  a {
+    margin-left: 5px;
+  }
+}

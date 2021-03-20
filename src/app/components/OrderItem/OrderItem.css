@@ -1,0 +1,27 @@
+.orderItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px rgba(34,36,38,.15) solid;
+}
+
+.boldOrder {
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+.rowOrder {
+  display: flex;
+  justify-content: space-between;
+}
+
+.inputOrder {
+  border: none;
+  margin-left: 4px;
+  width: 36px;
+}
+
+.itemQuantity {
+  margin-left: 16px;
+}

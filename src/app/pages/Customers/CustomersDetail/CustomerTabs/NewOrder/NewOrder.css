@@ -1,0 +1,9 @@
+.ui.segment {
+  height: 335px !important;
+}
+
+.productsList {
+  overflow:auto; 
+  height: 270px;
+  padding-right: 10px;
+}

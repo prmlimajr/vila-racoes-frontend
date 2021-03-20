@@ -1,0 +1,22 @@
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+
+  .signinLabel {
+    color: var(--black);
+    font-size: 10px;
+    font-weight: bold;
+  }
+
+  .signinInput {
+    height: 40px;
+    border: 1px var(--light-blue) solid;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    padding: 0 20px;
+
+    &:focus {
+      border: 2px var(--dark-blue) solid;
+    }
+  }
+}

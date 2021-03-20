@@ -1,0 +1,51 @@
+.headerContainer {
+  background-color: var(--black);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 4px var(--light-blue) solid;
+  position: fixed;
+  width: 100%;
+
+  .row {
+    display: flex;
+
+    .logoImgSmall {
+      width: 80px;
+      border-right: 4px var(--blue) solid;
+    }
+
+    .headerMenu {
+      display: flex;
+
+      .headerList {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        li {
+          padding: 20px;
+          height: 50px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          transition: all 0.2s;
+          cursor: pointer;
+
+          &:hover {
+            background-color: #1c1c1c;
+          }
+        }
+      }
+    }
+  }
+
+  #dateUser,
+  #usernameHeader {
+    color: var(--gray);
+  }
+
+  #usernameHeader {
+    margin-right: 100px;
+  }
+}
