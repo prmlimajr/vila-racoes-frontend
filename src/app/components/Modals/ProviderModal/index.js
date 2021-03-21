@@ -4,7 +4,7 @@ import { ErrorMessage, Formik, Form, Field } from 'formik';
 import Input from 'app/components/Input';
 import Button from 'app/components/Buttons/Button';
 import Loader from 'app/components/Loader';
-import { createProvider } from 'app/api/provider';
+import { createProvider, updateProvider } from 'app/api/provider';
 
 import { useToast } from 'app/hooks/ToastContext';
 import { useLoading } from 'app/hooks/LoadingContext';
@@ -53,7 +53,12 @@ export default function ProviderModal(props) {
       setLoading(true);
 
       await schema.validate(data, { abortEarly: false });
-      await createProvider(data);
+
+      if (props.type === 'create') {
+        await createProvider(data);
+      } else {
+        await updateProvider(props.provider.id, data);
+      }
 
       props.onClose();
 
@@ -82,24 +87,46 @@ export default function ProviderModal(props) {
     props.onClose();
   };
 
+  const initialValues = () => {
+    if (props.type === 'update') {
+      return {
+        cnpj: props.provider.cnpj,
+        name: props.provider.name,
+        email: props.provider.email,
+        phone: props.provider.phone,
+        address: props.provider.address.address,
+        number: props.provider.address.number,
+        complement: props.provider.address.complement,
+        district: props.provider.address.district,
+        city: props.provider.address.city,
+        zipCode: props.provider.address.zipCode,
+      };
+    }
+    return {
+      cnpj: '',
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      number: '',
+      complement: '',
+      district: '',
+      city: '',
+      zipCode: '',
+    };
+  };
+
   return (
     <div className='dimmer'>
       <div className='modalContainer' ref={node}>
-        <h2>Adicionar fornecedor</h2>
+        <h2>
+          {props.type === 'update'
+            ? 'Atualizar fornecedor'
+            : 'Adicionar fornecedor'}
+        </h2>
 
         <Formik
-          initialValues={{
-            cnpj: '',
-            name: '',
-            email: '',
-            phone: '',
-            address: '',
-            number: '',
-            complement: '',
-            district: '',
-            city: '',
-            zipCode: '',
-          }}
+          initialValues={initialValues()}
           onSubmit={data => handleSubmit(data)}
           validationSchema={schema}
         >
@@ -212,7 +239,13 @@ export default function ProviderModal(props) {
                 </div>
               </div>
               <Button disabled={loading}>
-                {loading ? <Loader color='#fff' /> : 'Cadastrar'}
+                {loading ? (
+                  <Loader color='#fff' />
+                ) : props.type === 'create' ? (
+                  'Cadastrar'
+                ) : (
+                  'Atualizar'
+                )}
               </Button>
             </Form>
           )}

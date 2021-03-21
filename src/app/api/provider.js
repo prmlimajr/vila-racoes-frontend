@@ -52,8 +52,8 @@ export const createProvider = async ({
 /**
  * DELETE PROVIDER
  */
-export const destroyProvider = async id => {
-  return await api.delete('/provider', id);
+export const deleteProvider = async id => {
+  await api.delete(`/provider/${id}`);
 };
 
 /**

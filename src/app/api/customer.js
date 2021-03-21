@@ -53,8 +53,8 @@ export const createCustomer = async ({
 /**
  * DELETE CUSTOMER
  */
-export const destroyCustomer = async id => {
-  return await api.delete('/customer', id);
+export const deleteCustomer = async id => {
+  await api.delete(`/customer/${id}`);
 };
 
 /**

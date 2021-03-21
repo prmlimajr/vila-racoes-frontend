@@ -5,6 +5,7 @@ import { useToast } from 'app/hooks/ToastContext';
 import Search from 'app/assets/icons/search.svg';
 import { useHistory } from 'react-router-dom';
 import ProductModal from 'app/components/Modals/ProductModal';
+import DeleteModal from 'app/components/Modals/DeleteModal';
 import Loader from 'app/components/Loader';
 import { useLoading } from 'app/hooks/LoadingContext';
 
@@ -16,8 +17,11 @@ export default function Products() {
   const [search, setSearch] = useState('');
   const [products, setProducts] = useState([]);
   const [open, setOpen] = useState(false);
+  const [destroy, setDestroy] = useState(false);
   const [type, setType] = useState('create');
   const [product, setProduct] = useState(null);
+  const [id, setId] = useState(null);
+  const [name, setName] = useState('');
 
   const { addToast } = useToast();
   const { loading, setLoading } = useLoading();
@@ -49,6 +53,12 @@ export default function Products() {
     setType('update');
     setProduct(product);
     setOpen(true);
+  };
+
+  const handleDelete = product => {
+    setId(product.id);
+    setName(product.name);
+    setDestroy(true);
   };
 
   const renderTable = data => {
@@ -90,7 +100,12 @@ export default function Products() {
                     className='edit'
                     onClick={() => handleUpdate(row)}
                   />
-                  <FiXCircle size={20} color='#d64824' className='delete' />
+                  <FiXCircle
+                    size={20}
+                    color='#d64824'
+                    className='delete'
+                    onClick={() => handleDelete(row)}
+                  />
                 </td>
               </tr>
             );
@@ -157,9 +172,16 @@ export default function Products() {
         <ProductModal
           open={open}
           onClose={() => setOpen(false)}
-          // options={options}
           type={type}
           product={product}
+        />
+      )}
+      {destroy && (
+        <DeleteModal
+          onClose={() => setDestroy(false)}
+          id={id}
+          name={name}
+          entity='product'
         />
       )}
     </div>

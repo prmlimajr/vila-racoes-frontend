@@ -43,8 +43,8 @@ export const createProduct = async ({
 /**
  * DELETE PRODUCT
  */
-export const destroyProduct = async id => {
-  return await api.delete('/product', id);
+export const deleteProduct = async id => {
+  await api.delete(`/product/${id}`);
 };
 
 /**

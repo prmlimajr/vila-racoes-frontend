@@ -6,6 +6,7 @@ import { useToast } from 'app/hooks/ToastContext';
 import Search from 'app/assets/icons/search.svg';
 import { useHistory } from 'react-router-dom';
 import CustomerModal from 'app/components/Modals/CustomerModal';
+import DeleteModal from 'app/components/Modals/DeleteModal';
 import Loader from 'app/components/Loader';
 import { useLoading } from 'app/hooks/LoadingContext';
 
@@ -18,11 +19,12 @@ export default function Customers() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(15);
   const [customers, setCustomers] = useState([]);
-  const [dateFrom, setDateFrom] = useState(new Date());
-  const [dateTo, setDateTo] = useState(new Date());
   const [open, setOpen] = useState(false);
+  const [destroy, setDestroy] = useState(false);
   const [type, setType] = useState('create');
   const [customer, setCustomer] = useState(null);
+  const [id, setId] = useState(null);
+  const [name, setName] = useState('');
 
   const { addToast } = useToast();
   const { loading, setLoading } = useLoading();
@@ -58,6 +60,12 @@ export default function Customers() {
     setType('update');
     setCustomer(customer);
     setOpen(true);
+  };
+
+  const handleDelete = customer => {
+    setId(customer.id);
+    setName(`${customer.firstName} ${customer.lastName}`);
+    setDestroy(true);
   };
 
   const renderTable = data => {
@@ -98,7 +106,12 @@ export default function Customers() {
                     className='edit'
                     onClick={() => handleUpdate(row)}
                   />
-                  <FiXCircle size={20} color='#d64824' className='delete' />
+                  <FiXCircle
+                    size={20}
+                    color='#d64824'
+                    className='delete'
+                    onClick={() => handleDelete(row)}
+                  />
                 </td>
               </tr>
             );
@@ -167,6 +180,14 @@ export default function Customers() {
           onClose={() => setOpen(false)}
           type={type}
           customer={customer}
+        />
+      )}
+      {destroy && (
+        <DeleteModal
+          onClose={() => setDestroy(false)}
+          id={id}
+          name={name}
+          entity='customer'
         />
       )}
     </div>

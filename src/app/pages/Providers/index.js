@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import * as DateFns from 'date-fns';
+import { FiEdit, FiXCircle } from 'react-icons/fi';
 import { getProviders } from 'app/api/provider';
 import { useToast } from 'app/hooks/ToastContext';
 import Search from 'app/assets/icons/search.svg';
 import { useHistory } from 'react-router-dom';
 import ProviderModal from 'app/components/Modals/ProviderModal';
+import DeleteModal from 'app/components/Modals/DeleteModal';
 import Loader from 'app/components/Loader';
 import { useLoading } from 'app/hooks/LoadingContext';
 
@@ -17,9 +18,12 @@ export default function Providers() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(15);
   const [providers, setCustomers] = useState([]);
-  const [dateFrom, setDateFrom] = useState(new Date());
-  const [dateTo, setDateTo] = useState(new Date());
   const [open, setOpen] = useState(false);
+  const [destroy, setDestroy] = useState(false);
+  const [type, setType] = useState('create');
+  const [provider, setProvider] = useState(null);
+  const [id, setId] = useState(null);
+  const [name, setName] = useState('');
 
   const { addToast } = useToast();
   const { loading, setLoading } = useLoading();
@@ -47,8 +51,16 @@ export default function Providers() {
     setSearch(e.target.value);
   };
 
-  const seeMore = id => {
-    history.push(`/fornecedores/${id}`);
+  const handleUpdate = provider => {
+    setType('update');
+    setProvider(provider);
+    setOpen(true);
+  };
+
+  const handleDelete = provider => {
+    setId(provider.id);
+    setName(provider.name);
+    setDestroy(true);
   };
 
   const renderTable = data => {
@@ -82,10 +94,24 @@ export default function Providers() {
                       }`
                     : '--'}
                 </td>
-                <td>
-                  <SeeMoreButton onClick={() => seeMore(row.id)}>
-                    Ver mais
-                  </SeeMoreButton>
+                <td
+                  style={{
+                    textAlign: 'right',
+                    paddingRight: '20px',
+                  }}
+                >
+                  <FiEdit
+                    size={20}
+                    color='teal'
+                    className='edit'
+                    onClick={() => handleUpdate(row)}
+                  />
+                  <FiXCircle
+                    size={20}
+                    color='#d64824'
+                    className='delete'
+                    onClick={() => handleDelete(row)}
+                  />
                 </td>
               </tr>
             );
@@ -118,6 +144,7 @@ export default function Providers() {
 
   const handleClick = () => {
     setOpen(true);
+    setType('create');
   };
 
   return (
@@ -138,25 +165,6 @@ export default function Providers() {
                 <img src={Search} alt='search' />
               </div>
             </div>
-
-            <div className='filterWrapper'>
-              {/* <span>Filtrar de: </span>
-              <DatePicker
-                onChange={setDateFrom}
-                value={dateFrom}
-                calendarIcon={null}
-                clearIcon={null}
-                format='dd/MM/yyyy'
-              />
-              <span> à </span>
-              <DatePicker
-                onChange={setDateTo}
-                value={dateTo}
-                calendarIcon={null}
-                clearIcon={null}
-                format='dd/MM/yyyy'
-              /> */}
-            </div>
           </div>
 
           <div className='buttonWrapper'>
@@ -166,7 +174,22 @@ export default function Providers() {
       </div>
 
       {providers.length > 0 ? renderTable(providers) : renderEmpty(loading)}
-      {open && <ProviderModal open={open} onClose={() => setOpen(false)} />}
+      {open && (
+        <ProviderModal
+          open={open}
+          onClose={() => setOpen(false)}
+          type={type}
+          provider={provider}
+        />
+      )}
+      {destroy && (
+        <DeleteModal
+          onClose={() => setDestroy(false)}
+          id={id}
+          name={name}
+          entity='provider'
+        />
+      )}
     </div>
   );
 }
