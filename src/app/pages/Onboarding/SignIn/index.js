@@ -45,7 +45,7 @@ export default function SignIn() {
       setLoading(false);
     }
   };
-  console.log(loading);
+
   return (
     <div className='onboarding'>
       <div className='leftSide'></div>

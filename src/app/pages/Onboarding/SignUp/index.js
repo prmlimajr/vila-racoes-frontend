@@ -25,9 +25,6 @@ const schema = Yup.object().shape({
   confirmPassword: Yup.string()
     .min(6, 'A senha deve ter no mínimo 6 caracteres')
     .required('Favor confirmar a sua senha'),
-  securityKey: Yup.string()
-    .min(6, 'O lembrete de senha deve ter ao menos 6 caracteres')
-    .required('Favor informar um lembrete de senha'),
 });
 
 export default function SignUp() {
@@ -140,7 +137,7 @@ export default function SignUp() {
                   className='validationInput'
                 />
 
-                <Button disabled={loading}>
+                <Button disabled={loading} onClick={handleSubmit}>
                   {loading ? <Loader color='#fff' /> : 'Cadastrar'}
                 </Button>
 
