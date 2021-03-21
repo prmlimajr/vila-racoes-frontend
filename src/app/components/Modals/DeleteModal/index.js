@@ -72,12 +72,15 @@ export default function DeleteModal(props) {
 
   return (
     <div className='dimmer'>
-      <div className='modalContainer' ref={node}>
+      <div className='deleteContainer' ref={node}>
         <h2>{`Excluir ${props.name}`}</h2>
 
-        <FiAlertTriangle size={30} />
+        <FiAlertTriangle size={50} />
 
-        <p>{`Você realmente deseja excluir os dados de <strong>${props.name}</strong>?`}</p>
+        <p>
+          Você realmente deseja excluir os dados de{' '}
+          <strong>{props.name}</strong>?
+        </p>
 
         <div className='row'>
           <Button onClick={props.onClose}>Cancelar</Button>
