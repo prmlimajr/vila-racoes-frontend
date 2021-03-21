@@ -12,6 +12,7 @@ import { useLoading } from 'app/hooks/LoadingContext';
 import './Products.scss';
 import SeeMoreButton from 'app/components/Buttons/SeeMoreButton';
 import AddButton from 'app/components/Buttons/AddButton';
+import Empty from 'app/assets/img/empty.jpg';
 
 export default function Products() {
   const [search, setSearch] = useState('');
@@ -131,6 +132,7 @@ export default function Products() {
     }
     return (
       <div className='emptyList'>
+        <img src={Empty} alt='' />
         <h4>Não foi encontrado nenhum produto.</h4>
       </div>
     );

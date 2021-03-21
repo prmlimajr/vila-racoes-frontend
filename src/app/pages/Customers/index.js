@@ -13,6 +13,7 @@ import { useLoading } from 'app/hooks/LoadingContext';
 import './Customers.scss';
 import SeeMoreButton from 'app/components/Buttons/SeeMoreButton';
 import AddButton from 'app/components/Buttons/AddButton';
+import Empty from 'app/assets/img/empty.jpg';
 
 export default function Customers() {
   const [search, setSearch] = useState('');
@@ -137,6 +138,7 @@ export default function Customers() {
     }
     return (
       <div className='emptyList'>
+        <img src={Empty} alt='' />
         <h4>Não foi encontrado nenhum cliente.</h4>
       </div>
     );

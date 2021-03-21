@@ -12,6 +12,7 @@ import { useLoading } from 'app/hooks/LoadingContext';
 import './Providers.scss';
 import SeeMoreButton from 'app/components/Buttons/SeeMoreButton';
 import AddButton from 'app/components/Buttons/AddButton';
+import Empty from 'app/assets/img/empty.jpg';
 
 export default function Providers() {
   const [search, setSearch] = useState('');
@@ -137,7 +138,8 @@ export default function Providers() {
     }
     return (
       <div className='emptyList'>
-        <h4>Não foi encontrado nenhum fornecedor.</h4>
+        <img src={Empty} alt='' />
+        <h3>Não foi encontrado nenhum fornecedor.</h3>
       </div>
     );
   };
