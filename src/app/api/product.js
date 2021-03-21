@@ -27,12 +27,16 @@ export const createProduct = async ({
   name,
   manufacturer,
   description,
+  quantity,
+  price,
 }) => {
   await api.post('/product', {
     code,
     name,
     manufacturer,
     description,
+    quantity,
+    price,
   });
 };
 
@@ -48,12 +52,14 @@ export const destroyProduct = async id => {
  */
 export const updateProduct = async (
   id,
-  { code, name, manufacturer, description }
+  { code, name, manufacturer, description, quantity, price }
 ) => {
   await api.put(`/product/${id}`, {
     code,
     name,
     manufacturer,
     description,
+    quantity,
+    price,
   });
 };

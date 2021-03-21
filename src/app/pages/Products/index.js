@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import * as DateFns from 'date-fns';
-import DatePicker from 'react-date-picker';
+import { FiEdit, FiXCircle } from 'react-icons/fi';
 import { getProducts } from 'app/api/product';
 import { useToast } from 'app/hooks/ToastContext';
 import Search from 'app/assets/icons/search.svg';
@@ -17,6 +16,8 @@ export default function Products() {
   const [search, setSearch] = useState('');
   const [products, setProducts] = useState([]);
   const [open, setOpen] = useState(false);
+  const [type, setType] = useState('create');
+  const [product, setProduct] = useState(null);
 
   const { addToast } = useToast();
   const { loading, setLoading } = useLoading();
@@ -44,8 +45,10 @@ export default function Products() {
     setSearch(e.target.value);
   };
 
-  const seeMore = id => {
-    history.push(`/produtos/${id}`);
+  const handleUpdate = product => {
+    setType('update');
+    setProduct(product);
+    setOpen(true);
   };
 
   const renderTable = data => {
@@ -57,21 +60,37 @@ export default function Products() {
             <th>Nome</th>
             <th>Fabricante</th>
             <th>Descrição</th>
+            <th style={{ textAlign: 'center' }}>Qtd. Estoque</th>
+            <th style={{ textAlign: 'right', paddingRight: '20px' }}>Preço</th>
             <th></th>
           </tr>
 
           {data.map(row => {
-            console.log(row);
             return (
               <tr key={row.id}>
                 <td>{row.code}</td>
                 <td>{row.name}</td>
                 <td>{row.manufacturer}</td>
                 <td>{row.description}</td>
-                <td>
-                  <SeeMoreButton onClick={() => seeMore(row.id)}>
-                    Ver mais
-                  </SeeMoreButton>
+                <td style={{ textAlign: 'center' }}>
+                  {row.stock.quantity || ''}
+                </td>
+                <td style={{ textAlign: 'right', paddingRight: '20px' }}>
+                  {row.price ? `R$${row.price}` : ''}
+                </td>
+                <td
+                  style={{
+                    textAlign: 'right',
+                    paddingRight: '20px',
+                  }}
+                >
+                  <FiEdit
+                    size={20}
+                    color='teal'
+                    className='edit'
+                    onClick={() => handleUpdate(row)}
+                  />
+                  <FiXCircle size={20} color='#d64824' className='delete' />
                 </td>
               </tr>
             );
@@ -104,6 +123,7 @@ export default function Products() {
 
   const handleClick = () => {
     setOpen(true);
+    setType('create');
   };
 
   return (
@@ -124,25 +144,6 @@ export default function Products() {
                 <img src={Search} alt='search' />
               </div>
             </div>
-
-            <div className='filterWrapper'>
-              {/* <span>Filtrar de: </span>
-              <DatePicker
-                onChange={setDateFrom}
-                value={dateFrom}
-                calendarIcon={null}
-                clearIcon={null}
-                format='dd/MM/yyyy'
-              />
-              <span> à </span>
-              <DatePicker
-                onChange={setDateTo}
-                value={dateTo}
-                calendarIcon={null}
-                clearIcon={null}
-                format='dd/MM/yyyy'
-              /> */}
-            </div>
           </div>
 
           <div className='buttonWrapper'>
@@ -152,7 +153,15 @@ export default function Products() {
       </div>
 
       {products.length > 0 ? renderTable(products) : renderEmpty(loading)}
-      {open && <ProductModal open={open} onClose={() => setOpen(false)} />}
+      {open && (
+        <ProductModal
+          open={open}
+          onClose={() => setOpen(false)}
+          // options={options}
+          type={type}
+          product={product}
+        />
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import * as DateFns from 'date-fns';
-import DatePicker from 'react-date-picker';
+import { FiEdit, FiXCircle } from 'react-icons/fi';
 import { getCustomers } from 'app/api/customer';
 import { useToast } from 'app/hooks/ToastContext';
 import Search from 'app/assets/icons/search.svg';
@@ -21,6 +21,8 @@ export default function Customers() {
   const [dateFrom, setDateFrom] = useState(new Date());
   const [dateTo, setDateTo] = useState(new Date());
   const [open, setOpen] = useState(false);
+  const [type, setType] = useState('create');
+  const [customer, setCustomer] = useState(null);
 
   const { addToast } = useToast();
   const { loading, setLoading } = useLoading();
@@ -52,6 +54,12 @@ export default function Customers() {
     history.push(`/clientes/${id}`);
   };
 
+  const handleUpdate = customer => {
+    setType('update');
+    setCustomer(customer);
+    setOpen(true);
+  };
+
   const renderTable = data => {
     return (
       <div className='table'>
@@ -75,10 +83,22 @@ export default function Customers() {
                   {DateFns.format(DateFns.parseISO(row.created), 'dd/MM/yyyy')}
                 </td>
                 <td>{row.lastShopped}</td>
-                <td>
-                  <SeeMoreButton onClick={() => seeMore(row.id)}>
+                <td
+                  style={{
+                    textAlign: 'right',
+                    paddingRight: '20px',
+                  }}
+                >
+                  {/* <SeeMoreButton onClick={() => seeMore(row.id)}>
                     Ver mais
-                  </SeeMoreButton>
+                  </SeeMoreButton> */}
+                  <FiEdit
+                    size={20}
+                    color='teal'
+                    className='edit'
+                    onClick={() => handleUpdate(row)}
+                  />
+                  <FiXCircle size={20} color='#d64824' className='delete' />
                 </td>
               </tr>
             );
@@ -111,6 +131,7 @@ export default function Customers() {
 
   const handleClick = () => {
     setOpen(true);
+    setType('create');
   };
 
   return (
@@ -131,25 +152,6 @@ export default function Customers() {
                 <img src={Search} alt='search' />
               </div>
             </div>
-
-            <div className='filterWrapper'>
-              {/* <span>Filtrar de: </span>
-              <DatePicker
-                onChange={setDateFrom}
-                value={dateFrom}
-                calendarIcon={null}
-                clearIcon={null}
-                format='dd/MM/yyyy'
-              />
-              <span> à </span>
-              <DatePicker
-                onChange={setDateTo}
-                value={dateTo}
-                calendarIcon={null}
-                clearIcon={null}
-                format='dd/MM/yyyy'
-              /> */}
-            </div>
           </div>
 
           <div className='buttonWrapper'>
@@ -159,7 +161,14 @@ export default function Customers() {
       </div>
 
       {customers.length > 0 ? renderTable(customers) : renderEmpty(loading)}
-      {open && <CustomerModal open={open} onClose={() => setOpen(false)} />}
+      {open && (
+        <CustomerModal
+          open={open}
+          onClose={() => setOpen(false)}
+          type={type}
+          customer={customer}
+        />
+      )}
     </div>
   );
 }

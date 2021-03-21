@@ -4,7 +4,7 @@ import { ErrorMessage, Formik, Form, Field } from 'formik';
 import Input from 'app/components/Input';
 import Button from 'app/components/Buttons/Button';
 import Loader from 'app/components/Loader';
-import { createCustomer } from 'app/api/customer';
+import { createCustomer, updateCustomer } from 'app/api/customer';
 
 import { useToast } from 'app/hooks/ToastContext';
 import { useLoading } from 'app/hooks/LoadingContext';
@@ -54,14 +54,19 @@ export default function CustomerModal(props) {
       setLoading(true);
 
       await schema.validate(data, { abortEarly: false });
-      await createCustomer(data);
 
-      props.onClose();
+      if (props.type === 'create') {
+        await createCustomer(data);
+      } else {
+        await updateCustomer(props.product.id, data);
+      }
 
       addToast({
         type: 'success',
         title: 'Cadastro realizado.',
       });
+
+      props.onClose();
     } catch (err) {
       addToast({
         type: 'error',
@@ -72,6 +77,7 @@ export default function CustomerModal(props) {
     } finally {
       setLoading(false);
       props.onClose();
+      window.location.reload();
     }
   };
 
@@ -82,25 +88,46 @@ export default function CustomerModal(props) {
     props.onClose();
   };
 
+  const initialValues = () => {
+    if (props.type === 'update') {
+      return {
+        cpf: props.customer.cpf,
+        firstName: props.customer.firstName,
+        lastName: props.customer.lastName,
+        email: props.customer.email,
+        phone: props.customer.phone,
+        address: props.customer.address.address,
+        number: props.customer.address.number,
+        complement: props.customer.address.complement,
+        district: props.customer.address.district,
+        city: props.customer.address.city,
+        zipCode: props.customer.address.zipCode,
+      };
+    }
+    return {
+      cpf: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      address: '',
+      number: '',
+      complement: '',
+      district: '',
+      city: '',
+      zipCode: '',
+    };
+  };
+
   return (
     <div className='dimmer'>
       <div className='modalContainer' ref={node}>
-        <h2>Adicionar cliente</h2>
+        <h2>
+          {props.type === 'update' ? 'Atualizar cliente' : 'Adicionar cliente'}
+        </h2>
 
         <Formik
-          initialValues={{
-            cpf: '',
-            firstName: '',
-            lastName: '',
-            email: '',
-            phone: '',
-            address: '',
-            number: '',
-            complement: '',
-            district: '',
-            city: '',
-            zipCode: '',
-          }}
+          initialValues={initialValues()}
           onSubmit={data => handleSubmit(data)}
           validationSchema={schema}
         >
@@ -228,7 +255,13 @@ export default function CustomerModal(props) {
                 </div>
               </div>
               <Button disabled={loading}>
-                {loading ? <Loader color='#fff' /> : 'Cadastrar'}
+                {loading ? (
+                  <Loader color='#fff' />
+                ) : props.type === 'create' ? (
+                  'Cadastrar'
+                ) : (
+                  'Atualizar'
+                )}
               </Button>
             </Form>
           )}

@@ -1,31 +1,47 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import * as DateFns from 'date-fns';
-import DatePicker from 'react-date-picker';
 import { getProviders } from 'app/api/provider';
+import { useToast } from 'app/hooks/ToastContext';
 import Search from 'app/assets/icons/search.svg';
 import { useHistory } from 'react-router-dom';
 import ProviderModal from 'app/components/Modals/ProviderModal';
 import Loader from 'app/components/Loader';
 import { useLoading } from 'app/hooks/LoadingContext';
-import { useProvider } from 'app/hooks/ProvidersContext';
 
 import './Providers.scss';
 import SeeMoreButton from 'app/components/Buttons/SeeMoreButton';
 import AddButton from 'app/components/Buttons/AddButton';
 
 export default function Providers() {
+  const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(15);
-  const [providers, setProviders] = useState([]);
+  const [providers, setCustomers] = useState([]);
+  const [dateFrom, setDateFrom] = useState(new Date());
+  const [dateTo, setDateTo] = useState(new Date());
   const [open, setOpen] = useState(false);
 
+  const { addToast } = useToast();
   const { loading, setLoading } = useLoading();
-  const { providerList, search, setSearch } = useProvider();
   const history = useHistory();
 
-  useEffect(() => {
-    setProviders(providerList);
-  }, [providerList]);
+  useEffect(async () => {
+    try {
+      setLoading(true);
+      const customersList = await getProviders({ search, page, perPage });
+
+      setCustomers(customersList);
+    } catch (err) {
+      addToast({
+        type: 'error',
+        title: 'Falha na requisição',
+        description:
+          'Não foi possível carregar a lista de fornecedores. Tente novamente.',
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [search, page, perPage]);
 
   const onSearchChange = e => {
     setSearch(e.target.value);
@@ -42,8 +58,8 @@ export default function Providers() {
           <tr>
             <th>Nome</th>
             <th>CNPJ</th>
-            <th>Telefone</th>
             <th>E-mail</th>
+            <th>Telefone</th>
             <th>Endereço</th>
             <th></th>
           </tr>
@@ -53,10 +69,18 @@ export default function Providers() {
               <tr key={row.id}>
                 <td>{row.name}</td>
                 <td>{row.cnpj}</td>
-                <td>{row.phone}</td>
                 <td>{row.email}</td>
+                <td>{row.phone}</td>
                 <td>
-                  {`${row.address.address}, ${row.address.number}, ${row.address.complement} - ${row.address.district}, ${row.address.city} - ${row.address.zipCode}`}
+                  {row.address
+                    ? `${row.address.address}, ${
+                        row.address.number || 'S/N'
+                      }, ${row.address.complement || ''} - ${
+                        row.address.district || ''
+                      }, ${row.address.city || ''}, ${
+                        row.address.zipCode || ''
+                      }`
+                    : '--'}
                 </td>
                 <td>
                   <SeeMoreButton onClick={() => seeMore(row.id)}>
@@ -115,7 +139,24 @@ export default function Providers() {
               </div>
             </div>
 
-            <div className='filterWrapper'></div>
+            <div className='filterWrapper'>
+              {/* <span>Filtrar de: </span>
+              <DatePicker
+                onChange={setDateFrom}
+                value={dateFrom}
+                calendarIcon={null}
+                clearIcon={null}
+                format='dd/MM/yyyy'
+              />
+              <span> à </span>
+              <DatePicker
+                onChange={setDateTo}
+                value={dateTo}
+                calendarIcon={null}
+                clearIcon={null}
+                format='dd/MM/yyyy'
+              /> */}
+            </div>
           </div>
 
           <div className='buttonWrapper'>

@@ -8,6 +8,7 @@ import { createProvider } from 'app/api/provider';
 
 import { useToast } from 'app/hooks/ToastContext';
 import { useLoading } from 'app/hooks/LoadingContext';
+// import { useProvider } from 'app/hooks/ProvidersContext';
 import { Link, useHistory } from 'react-router-dom';
 
 const schema = Yup.object().shape({
@@ -26,6 +27,7 @@ const schema = Yup.object().shape({
 export default function ProviderModal(props) {
   const { addToast } = useToast();
   const { loading, setLoading } = useLoading();
+  // const { createProvider } = useProvider();
   const node = useRef();
 
   useEffect(() => {
@@ -69,6 +71,7 @@ export default function ProviderModal(props) {
     } finally {
       setLoading(false);
       props.onClose();
+      window.location.reload();
     }
   };
 

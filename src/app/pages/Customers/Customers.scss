@@ -76,11 +76,16 @@
         &:hover {
           background-color: #fafafa;
         }
-      }
 
-      td {
-        height: 40px;
-        border-top: 1px solid var(--gray);
+        th {
+          margin-right: 20px;
+        }
+
+        td {
+          height: 40px;
+          border-top: 1px solid var(--gray);
+          min-width: 150px;
+        }
       }
     }
   }
